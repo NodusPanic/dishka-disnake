@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dishka_disnake.ui.base import WrappedDishkaComponent
-from dishka_disnake.injector.wrap import wrap_injector
+from dishka_disnake.injector.wrap._async import wrap_injector
 
 from typing import (
     TYPE_CHECKING,

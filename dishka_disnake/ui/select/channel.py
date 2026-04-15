@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from disnake.ui.item import DecoratedItem, ItemCallbackType
 
 from dishka_disnake.ui.base import WrappedDishkaComponent
-from dishka_disnake.injector.wrap import wrap_injector
+from dishka_disnake.injector.wrap._async import wrap_injector
 
 __all__ = (
     "ChannelSelect",

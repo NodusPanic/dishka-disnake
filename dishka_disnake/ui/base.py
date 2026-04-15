@@ -1,6 +1,7 @@
-from typing import Any, Generic, TypeVar
+from collections.abc import Callable
+from typing import Any, Coroutine, Generic, TypeVar
 
-from dishka_disnake.injector.wrap import wrap_injector
+from dishka_disnake.injector.wrap._async import wrap_injector
 
 
 T = TypeVar("T")
@@ -12,6 +13,6 @@ class WrappedDishkaComponent(Generic[T]):
     def __init_subclass__(cls, **kwargs: Any):
         super().__init_subclass__(**kwargs)
 
-        cb = cls.__dict__.get("callback")
+        cb: Callable[..., Coroutine[Any, Any, None]] | None = cls.__dict__.get("callback")
         if cb is not None:
-            cls.callback = wrap_injector(cb)
+            cls.callback = wrap_injector(cb)  # type: ignore[assignment]

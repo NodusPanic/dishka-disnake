@@ -129,8 +129,8 @@ wheels = [
 
 [[package]]
 name = "dishka-disnake"
-version = "0.1.0"
-source = { virtual = "." }
+version = "0.1.4"
+source = { editable = "." }
 dependencies = [
     { name = "dishka" },
     { name = "disnake" },

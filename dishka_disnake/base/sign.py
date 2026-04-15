@@ -1,28 +1,27 @@
-import inspect
+from collections.abc import Callable
+from inspect import Signature, signature, Parameter
 
-from typing import Callable
-
-from dishka_disnake.base.checkers import is_disnake_annotation
+from dishka_disnake.injector.util import extract_fromdishka
 
 
-def rebuild_signature(func: Callable) -> inspect.Signature:
-    sig = inspect.signature(func)
-    params = []
+def rebuild_signature(func: Callable) -> Signature:
+    sig = signature(func)
+    params: list[Parameter] = []
 
-    params_ = sig.parameters.items()
-    for _, param in params_:
+    params_ = sig.parameters.values()
+    for param in params_:
         if param.name == "self":
             params.append(param)
             continue
 
         if param.kind in (
-            inspect.Parameter.VAR_POSITIONAL,
-            inspect.Parameter.VAR_KEYWORD,
+            Parameter.VAR_POSITIONAL,
+            Parameter.VAR_KEYWORD,
         ):
             params.append(param)
             continue
 
-        if is_disnake_annotation(param.annotation):
+        if not extract_fromdishka(param.annotation):
             params.append(param)
             continue
 

@@ -1,93 +1,51 @@
-import inspect
+from collections.abc import Callable
+from inspect import iscoroutinefunction
+from typing import TypeVar, ParamSpec, Coroutine, Any, overload
 
-from typing import (
-    Callable,
-    TypeVar,
-    ParamSpec,
-    Coroutine,
-    Any,
-    Annotated,
-    get_origin,
-    get_args,
-)
+from dishka import FromDishka
 
-from functools import wraps
+from dishka_disnake.injector.wrap import _async, _sync
 
-from dishka import AsyncContainer, FromDishka
-
-from dishka_disnake.state_management import State
-from dishka_disnake.base.checkers import is_dependency
-
-
-__all__ = ["inject", "inject_loose"]
+__all__ = ["inject", "inject_loose", "FromDishka"]
 
 P = ParamSpec("P")
 R = TypeVar("R")
 
 
-def extract_fromdishka(annotation):
-    origin = get_origin(annotation)
-
-    if origin is Annotated:
-        base, *metadata = get_args(annotation)
-        for meta in metadata:
-            mod = getattr(meta, "__module__", "")
-            if mod.startswith("dishka") or mod.startswith("dishka_disnake"):
-                return base
-    elif origin is FromDishka:
-        return get_args(annotation)[0]
-
-    return None
-
-
+@overload
 def inject(
     func: Callable[P, Coroutine[Any, Any, R]],
-) -> Callable[P, Coroutine[Any, Any, R]]:
+) -> Callable[P, Coroutine[Any, Any, R]]: ...
+@overload
+def inject(func: Callable[P, R]) -> Callable[P, R]: ...
+def inject(
+    func: Callable[P, Coroutine[Any, Any, R]] | Callable[P, R],
+) -> Callable:
     """
-    decorator: accepts any async function (arguments not strict),
-    but preserves the return type R.
+    Decorator that injects dependencies marked with FromDishka into the function.
+
+    Resolves annotated parameters from the dishka container automatically,
+    so they don't need to be passed manually by the caller.
+    Supports both sync and async functions.
     """
-    if not inspect.iscoroutinefunction(func):
-        raise TypeError(
-            f"@inject can be applied only to async functions: {func.__name__}"
-        )
-
-    @wraps(func)
-    async def async_wrapper(*args, **kwargs):
-        container: AsyncContainer | None = State.container
-        sig = inspect.signature(func)
-
-        if container is None:
-            raise RuntimeError("Container is not initialized, setup dishka first")
-
-        async with container() as c:
-            params = sig.parameters.items()
-            for name, param in params:
-                if name in kwargs or param.annotation is inspect._empty:
-                    continue
-
-                annotation = param.annotation
-
-                dep_type = extract_fromdishka(annotation)
-                if dep_type is not None:
-                    kwargs[name] = await c.get(dep_type)
-                    continue
-
-                if is_dependency(annotation):
-                    kwargs[name] = await c.get(annotation)
-                    continue
-
-            return await func(*args, **kwargs)
-
-    return async_wrapper
+    if not iscoroutinefunction(func):
+        return _sync.wrap_injector(func)
+    return _async.wrap_injector(func)
 
 
+@overload
 def inject_loose(
     func: Callable[..., Coroutine[Any, Any, R]],
-) -> Callable[..., Coroutine[Any, Any, R]]:
+) -> Callable[..., Coroutine[Any, Any, R]]: ...
+@overload
+def inject_loose(func: Callable[..., R]) -> Callable[..., R]: ...
+def inject_loose(
+    func: Callable[..., Coroutine[Any, Any, R]] | Callable[..., R],
+) -> Callable:
     """
-    Loose decorator: accepts any async function (arguments not strict),
-    but preserves the return type R.
-    Delegates to the real `inject` implementation.
+    Same as `inject`, but with loose typing (Callable[...] instead of Callable[P]).
+
+    Use when the exact parameter signature doesn't matter to the caller,
+    for example when decorating methods dynamically or in metaclasses.
     """
     return inject(func)
