@@ -27,6 +27,8 @@ def wrap_injector(
 
         if container is None:
             raise RuntimeError("Container is not initialized, setup dishka first")
+        if not isinstance(container, Container):
+            raise TypeError("Container is not a dishka sync container")
 
         with container() as c:
             params = sig.parameters.items()

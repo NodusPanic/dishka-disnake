@@ -8,7 +8,7 @@ from typing import (
     Any,
 )
 
-from dishka import AsyncContainer
+from dishka import AsyncContainer, Container
 
 from dishka_disnake.base.sign import rebuild_signature
 from dishka_disnake.injector.util import extract_fromdishka
@@ -25,23 +25,39 @@ def wrap_injector(
 
     @wraps(func)
     async def async_wrapper(*args, **kwargs):
-        container: AsyncContainer | None = State.container
+        container: AsyncContainer | Container | None = State.container
 
         if container is None:
             raise RuntimeError("Container is not initialized, setup dishka first")
 
-        async with container() as c:
-            params = sig.parameters.items()
-            for name, param in params:
-                annotation = param.annotation
-                if name in kwargs or annotation is _empty:
-                    continue
+        if isinstance(container, AsyncContainer):
+            async with container() as c:
+                params = sig.parameters.items()
+                for name, param in params:
+                    annotation = param.annotation
+                    if name in kwargs or annotation is _empty:
+                        continue
 
-                dep_type = extract_fromdishka(annotation)
-                if dep_type is not None:
-                    kwargs[name] = await c.get(dep_type)
+                    dep_type = extract_fromdishka(annotation)
+                    if dep_type is not None:
+                        kwargs[name] = await c.get(dep_type)
 
-            return await func(*args, **kwargs)
+                return await func(*args, **kwargs)
+        elif isinstance(container, Container):
+            with container() as c:
+                params = sig.parameters.items()
+                for name, param in params:
+                    annotation = param.annotation
+                    if name in kwargs or annotation is _empty:
+                        continue
+
+                    dep_type = extract_fromdishka(annotation)
+                    if dep_type is not None:
+                        kwargs[name] = c.get(dep_type)
+
+                return await func(*args, **kwargs)
+        else:
+            raise TypeError("Container is not a dishka container")
 
     async_wrapper.__signature__ = rebuild_signature(func)  # type: ignore
 

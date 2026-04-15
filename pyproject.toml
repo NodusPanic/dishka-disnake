@@ -12,6 +12,7 @@ requires-python = ">=3.12"
 license = { text = "GPL-3.0-only" }
 
 dependencies = [
+    "discord>=2.3.2",
     "dishka>=1.7.2",
     "disnake>=2.11.0",
 ]
