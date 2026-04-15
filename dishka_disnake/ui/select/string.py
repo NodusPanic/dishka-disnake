@@ -17,8 +17,8 @@ from disnake import MessageInteraction, ui
 from disnake.components import SelectOption
 from disnake.ui.select.base import P, V_co
 
+from dishka_disnake.base.ui_component import WrappedDishkaComponent
 from dishka_disnake.injector.wrap._async import wrap_injector
-from dishka_disnake.ui.base import WrappedDishkaComponent
 
 if TYPE_CHECKING:
     from disnake.ui.item import DecoratedItem, ItemCallbackType

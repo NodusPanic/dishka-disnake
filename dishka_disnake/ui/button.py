@@ -17,7 +17,7 @@ from disnake.enums import ButtonStyle
 from disnake.partial_emoji import PartialEmoji
 from disnake.ui.item import DecoratedItem
 
-from dishka_disnake.ui.base import WrappedDishkaComponent
+from dishka_disnake.base.ui_component import WrappedDishkaComponent
 
 __all__ = (
     "Button",
