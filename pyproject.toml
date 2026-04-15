@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dishka-disnake"
-version = "0.2.0"
+version = "0.1.5"
 authors = [{name = "kipoha", email = "kipoha.core@gmail.com"}]
 description = "Disnake mini library with Dishka integration"
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -12,7 +12,6 @@ requires-python = ">=3.12"
 license = { text = "GPL-3.0-only" }
 
 dependencies = [
-    "discord>=2.3.2",
     "dishka>=1.7.2",
     "disnake>=2.11.0",
 ]
