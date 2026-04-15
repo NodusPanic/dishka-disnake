@@ -10,7 +10,7 @@ from disnake.ext.commands.ctx_menus_core import (
     InvokableUserCommand,
 )
 
-from dishka_disnake.injector.wrap import wrap_injector
+from dishka_disnake.injector.wrap._async import wrap_injector
 
 if TYPE_CHECKING:
     from typing_extensions import ParamSpec

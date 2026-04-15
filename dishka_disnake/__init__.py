@@ -12,7 +12,7 @@ from dishka_disnake.commands import slash_command
 class HelloCog(Cog)
 
     @slash_command(name="hello", description="Say hello")
-    async def hello_command(interaction: AppCmdInter, usecase: FromDishka[HelloUseCase]):  # or HelloUseCase(without 'FromDishka')
+    async def hello_command(interaction: AppCmdInter, usecase: FromDishka[HelloUseCase]):
         ...
 ```
 
@@ -25,7 +25,7 @@ from dishka_disnake.commands import user_command
 class HelloCog(Cog)
 
     @user_command(name="hello", description="Say hello")
-    async def hello_command(interaction: AppCmdInter, usecase: FromDishka[HelloUseCase]):  # or HelloUseCase(without 'FromDishka')
+    async def hello_command(interaction: AppCmdInter, usecase: FromDishka[HelloUseCase]):
         ...
 ```
 
@@ -38,7 +38,7 @@ from dishka_disnake.commands import message_command
 class HelloCog(Cog)
 
     @message_command(name="hello", description="Say hello")
-    async def hello_command(interaction: AppCmdInter, usecase: FromDishka[HelloUseCase]):  # or HelloUseCase(without 'FromDishka')
+    async def hello_command(interaction: AppCmdInter, usecase: FromDishka[HelloUseCase]):
         ...
 ```
 
@@ -54,7 +54,7 @@ class MyButton(Button):
     def __init__(self):
         super().__init__(label="My Button", style=ButtonStyle.primary)
 
-    async def callback(self, interaction: MessageInteraction, repo: UserRepo):  # or FromDishka[UserRepo]
+    async def callback(self, interaction: MessageInteraction, repo: FromDishka[UserRepo]):
         ...
 
 
@@ -64,7 +64,7 @@ class MyView(ui.View):
         self.add_item(MyButton())
 
     @button(label="My Button")
-    async def my_button_callback(self, interaction: MessageInteraction, repo: UserRepo):  # or FromDishka[UserRepo]
+    async def my_button_callback(self, interaction: MessageInteraction, repo: FromDishka[UserRepo]):
         ...
 
 ```
@@ -84,7 +84,7 @@ class MySelect(Select):
             SelectOption(label="Option 2", value="2"),
         ])
 
-    async def callback(self, interaction: MessageInteraction, repo: UserRepo):  # or FromDishka[UserRepo]
+    async def callback(self, interaction: MessageInteraction, repo: FromDishka[UserRepo]):
         ...
 
 
@@ -94,7 +94,7 @@ class MyView(ui.View):
         self.add_item(MySelect())
 
     @select(placeholder="My Select")
-    async def my_select_callback(self, interaction: MessageInteraction, repo: UserRepo):  # or FromDishka[UserRepo]
+    async def my_select_callback(self, interaction: MessageInteraction, repo: FromDishka[UserRepo]):
         ...
 
 ```
@@ -115,20 +115,21 @@ class MyModal(Modal):
             TextInput(label="My Input Description", style=TextInputStyle.paragraph),
         ])
 
-    async def callback(self, interaction: ModalInteraction, repo: UserRepo):  # or FromDishka[UserRepo]
+    async def callback(self, interaction: ModalInteraction, repo: FromDishka[UserRepo]):
         ...
 ```
 """
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 __author__ = "kipoha"
 
 
-from dishka_disnake.injector import inject, inject_loose
+from dishka_disnake.injector import inject, inject_loose, FromDishka
 from dishka_disnake.setup import setup_dishka
 
 __all__ = [
     "inject",
     "inject_loose",
     "setup_dishka",
+    "FromDishka",
 ]

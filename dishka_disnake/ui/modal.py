@@ -1,6 +1,6 @@
 from disnake import ModalInteraction, ui
 
-from dishka_disnake.ui.base import WrappedDishkaComponent
+from dishka_disnake.base.ui_component import WrappedDishkaComponent
 
 
 class Modal(WrappedDishkaComponent[ModalInteraction], ui.Modal):

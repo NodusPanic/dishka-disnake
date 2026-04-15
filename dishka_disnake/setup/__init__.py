@@ -1,9 +1,9 @@
-from dishka import AsyncContainer
+from dishka import AsyncContainer, Container
 
 from dishka_disnake.state_management import State
 
 
-def setup_dishka(container: AsyncContainer) -> None:
+def setup_dishka(container: AsyncContainer | Container) -> None:
     """
     Setup dishka for disnake
     """

@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
     from disnake.ext.commands.base_core import CommandCallback
 
-from dishka_disnake.injector.wrap import wrap_injector
+from dishka_disnake.injector.wrap._async import wrap_injector
 
 
 class SubCommandGroup(OriginalSubCommandGroup):
@@ -275,7 +275,7 @@ def slash_command(
     def decorator(func: CommandCallback) -> InvokableSlashCommand:
         func = wrap_injector(func)
         if not utils.iscoroutinefunction(func):
-            raise TypeError(f"<{func.__qualname__}> must be a coroutine function")
+            raise TypeError(f"<{func.__qualname__}> must be a coroutine function")  # type: ignore[attr-defined]
         if hasattr(func, "__command_flag__"):
             raise TypeError("Callback is already a command.")
         if guild_ids and not all(isinstance(guild_id, int) for guild_id in guild_ids):

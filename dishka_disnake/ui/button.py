@@ -17,7 +17,7 @@ from disnake.enums import ButtonStyle
 from disnake.partial_emoji import PartialEmoji
 from disnake.ui.item import DecoratedItem
 
-from dishka_disnake.ui.base import WrappedDishkaComponent
+from dishka_disnake.base.ui_component import WrappedDishkaComponent
 
 __all__ = (
     "Button",
@@ -35,7 +35,7 @@ if TYPE_CHECKING:
 else:
     ParamSpec = TypeVar
 
-from dishka_disnake.injector.wrap import wrap_injector
+from dishka_disnake.injector.wrap._async import wrap_injector
 
 B = TypeVar("B", bound="Button")
 B_co = TypeVar("B_co", bound="Button", covariant=True)
