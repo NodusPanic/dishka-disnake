@@ -23,7 +23,7 @@ def wrap_injector(
 ) -> Callable[P, Coroutine[Any, Any, R]]:
     original_annotations = getattr(func, "__dishka_annotations__", func.__annotations__)
 
-    sig = signature(func)  # чистая (без DI) — для __signature__ wrapper'а
+    sig = signature(func)
 
     full_params = {}
     for name, param in sig.parameters.items():
