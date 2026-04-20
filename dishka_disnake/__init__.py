@@ -5,6 +5,103 @@ Example:
 
 ---
 
+## DishkaCog
+
+`DishkaCog` is a base class for Cogs that automatically injects dependencies from the Dishka container into all supported handlers — no decorators needed.
+
+Supported handler types:
+- Slash commands (`@commands.slash_command`)
+- User commands (`@commands.user_command`)
+- Message commands (`@commands.message_command`)
+- Prefix commands (`@commands.command`)
+- Events (`@Cog.listener`)
+
+```py
+from dishka import FromDishka
+from dishka_disnake import DishkaCog
+from disnake import AppCmdInter
+from disnake.ext import commands
+from disnake.ext.commands import Bot, Context
+
+class MyCog(DishkaCog):
+    def __init__(self, bot: Bot):
+        self.bot = bot
+
+    # Slash command — session is injected automatically
+    @commands.slash_command(name="hello")
+    async def hello(self, interaction: AppCmdInter, session: FromDishka[AsyncSession]):
+        await interaction.response.send_message(f"Hello! {session}")
+
+    # Prefix command — session is injected automatically
+    @commands.command(name="ping")
+    async def ping(self, ctx: Context, session: FromDishka[AsyncSession]):
+        await ctx.send(f"Pong! {session}")
+
+    # User command — session is injected automatically
+    @commands.user_command(name="info")
+    async def info(self, interaction: AppCmdInter, session: FromDishka[AsyncSession]):
+        await interaction.response.send_message(f"Info! {session}")
+
+    # Message command — session is injected automatically
+    @commands.message_command(name="quote")
+    async def quote(self, interaction: AppCmdInter, session: FromDishka[AsyncSession]):
+        await interaction.response.send_message(f"Quote! {session}")
+
+    # Listener event — session is injected automatically
+    @Cog.listener("on_ready")
+    async def on_ready(self, session: FromDishka[AsyncSession]):
+        print(f"Ready! {session}")
+
+def setup(bot: Bot):
+    bot.add_cog(MyCog(bot))
+```
+
+### Subcommands and subcommand groups
+
+`DishkaCog` also works with subcommands and subcommand groups:
+
+```py
+class MyCog(DishkaCog):
+    def __init__(self, bot: Bot):
+        self.bot = bot
+
+    @commands.slash_command()
+    async def base(self, interaction: AppCmdInter):
+        pass
+
+    @base.sub_command()
+    async def sub(self, interaction: AppCmdInter, session: FromDishka[AsyncSession]):
+        await interaction.response.send_message(f"Sub! {session}")
+
+    @commands.slash_command()
+    async def group(self, _: AppCmdInter):
+        pass
+
+    @group.sub_command_group()
+    async def subgroup(self, _: AppCmdInter):
+        pass
+
+    @subgroup.sub_command()
+    async def nested(self, interaction: AppCmdInter, session: FromDishka[AsyncSession]):
+        await interaction.response.send_message(f"Nested! {session}")
+```
+
+### Difference from `@inject`
+
+If you only need injection on specific methods rather than the entire Cog, use the `@inject` decorator on individual methods in a regular `Cog` instead of inheriting from `DishkaCog`:
+
+```py
+from dishka_disnake import inject
+
+class MyCog(Cog):
+
+    @slash_command(name="hello")
+    @inject
+    async def hello(self, interaction: AppCmdInter, session: FromDishka[AsyncSession]):
+        await interaction.response.send_message(f"Hello! {session}")
+```
+---
+
 ### Slash Commands
 ```py
 from dishka_disnake.commands import slash_command
