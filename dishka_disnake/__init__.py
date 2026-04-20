@@ -217,7 +217,7 @@ class MyModal(Modal):
 ```
 """
 
-__version__ = "0.1.6"
+__version__ = "0.1.61"
 __author__ = "kipoha"
 
 
