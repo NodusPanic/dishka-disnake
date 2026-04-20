@@ -120,10 +120,11 @@ class MyModal(Modal):
 ```
 """
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 __author__ = "kipoha"
 
 
+from dishka_disnake.cog import DishkaCog
 from dishka_disnake.injector import inject, inject_loose, FromDishka
 from dishka_disnake.setup import setup_dishka
 
@@ -132,4 +133,5 @@ __all__ = [
     "inject_loose",
     "setup_dishka",
     "FromDishka",
+    "DishkaCog",
 ]
