@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dishka-disnake"
-version = "0.1.6"
+version = "0.1.61"
 authors = [{name = "kipoha", email = "kipoha.core@gmail.com"}]
 description = "Disnake mini library with Dishka integration"
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -22,3 +22,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
 ]
+[project.urls]
+Homepage = "https://github.com/NodusPanic/dishka-disnake"
+Source = "https://github.com/NodusPanic/dishka-disnake"
+Issues = "https://github.com/NodusPanic/dishka-disnake/issues"
